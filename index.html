@@ -11,23 +11,25 @@
 body{
   margin:0;
   font-family:'Poppins',sans-serif;
-  background:#ffffff;
+  background:#f7f7f8;
   color:#111;
   -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
 }
 
 .page{
   display:none;
-  padding:16px;
-  padding-bottom:120px;
+  padding:18px;
+  padding-bottom:130px;
 }
 
 .active{display:block;}
 
 h3{
-  margin:0 0 15px 0;
+  margin:0 0 16px 0;
   font-weight:600;
-  letter-spacing:0.3px;
+  letter-spacing:0.2px;
+  font-size:18px;
 }
 
 /* ==================== GRID ==================== */
@@ -38,10 +40,10 @@ h3{
   gap:14px;
 }
 
-/* ==================== PRODUCT CARD ==================== */
+/* ==================== PRODUCT CARD (PRO) ==================== */
 .product,.cart-item,.history-item{
-  background:#fff;
-  border:0px solid #e6e6e6;
+  background:linear-gradient(145deg,#ffffff,#f5f5f5);
+  border:1px solid rgba(0,0,0,0.06);
   border-radius:18px;
   padding:14px;
   display:flex;
@@ -50,102 +52,186 @@ h3{
   text-align:center;
   gap:10px;
   cursor:pointer;
-  transition:0.2s ease;
-  box-shadow:0 6px 18px rgba(0, 0, 0, 0.163);
+  transition:all 0.25s ease;
+  box-shadow:0 8px 22px rgba(0,0,0,0.08);
+  position:relative;
+  overflow:hidden;
 }
 
+/* soft hover depth */
 .product:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+  transform:translateY(-4px) scale(1.01);
+  box-shadow:0 14px 35px rgba(0,0,0,0.12);
 }
 
+/* subtle shine effect */
+.product::after{
+  content:'';
+  position:absolute;
+  top:-50%;
+  left:-50%;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle,rgba(255,255,255,0.35),transparent 60%);
+  opacity:0;
+  transition:0.4s;
+}
+
+.product:hover::after{
+  opacity:1;
+}
+
+/* images */
 .product img,.cart-item img,.history-item img{
-  width:65%;
-  border-radius:12px;
+  width:68%;
+  border-radius:14px;
   object-fit:cover;
+  transition:0.3s;
 }
 
-/* ==================== BUTTONS ==================== */
+.product:hover img{
+  transform:scale(1.03);
+}
+
+/* ==================== BUTTONS (APPLE STYLE) ==================== */
 button{
   padding:12px 14px;
-  border-radius:10px;
+  border-radius:12px;
   border:none;
   font-weight:600;
   cursor:pointer;
-  transition:0.2s ease;
+  transition:all 0.2s ease;
   letter-spacing:0.2px;
+  font-size:14px;
 }
 
+/* primary */
 .primary{
   background:#111;
   color:#fff;
+  box-shadow:0 6px 15px rgba(0,0,0,0.2);
 }
 
 .primary:hover{
   background:#000;
-  transform:scale(1.02);
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.25);
 }
 
+/* secondary */
 .secondary{
-  background:#f4f4f4;
+  background:#ffffff;
   color:#111;
-  border:1px solid #e0e0e0;
+  border:1px solid rgba(0,0,0,0.1);
 }
 
 .secondary:hover{
-  background:#eaeaea;
+  background:#f2f2f2;
 }
 
+/* disabled */
 button:disabled{
-  background:#ddd;
-  color:#888;
+  background:#e5e5e5;
+  color:#999;
   cursor:not-allowed;
+  box-shadow:none;
 }
 
-/* ==================== INPUT ==================== */
+/* ==================== INPUT (MODERN APP STYLE) ==================== */
 input{
   width:95%;
-  padding:12px 14px;
-  border-radius:10px;
-  border:1px solid #e5e5e5;
-  background:#fafafa;
+  padding:13px 14px;
+  border-radius:12px;
+  border:1px solid rgba(0,0,0,0.08);
+  background:#ffffff;
   color:#111;
   margin-bottom:10px;
   outline:none;
   transition:0.2s;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 input:focus{
   border-color:#111;
-  background:#fff;
+  box-shadow:0 0 0 3px rgba(0,0,0,0.08);
 }
 
 input::placeholder{
-  color:#999;
+  color:#aaa;
 }
 
-/* ==================== NAVBAR ==================== */
+/* ==================== NAVBAR (GLASS PREMIUM) ==================== */
+/* ================= NAV BUTTON ================= */
 .navbar{
   position:fixed;
   bottom:0;
   width:100%;
-  background:rgba(255,255,255);
+  background:rgba(255,255,255,0.9);
+  backdrop-filter:blur(12px);
   display:flex;
   justify-content:space-around;
-  padding:16px 0;
-  border-top:0px solid #e6e6e6;
-  box-shadow: 7px 7px 7px 7px rgba(0, 0, 0, 0.143);
+  padding:10px 0;
+  border-top:1px solid rgba(0,0,0,0.06);
 }
 
-.navbar button{
-  background: rgba(0, 0, 0, 0.058);
+.nav-btn{
+  background:transparent;
+  border:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  font-size:12px;
+  color:#666;
+  cursor:pointer;
+  transition:0.25s ease;
+  min-width:60px;
+}
+
+/* ICON */
+.nav-btn .icon{
+  font-size:20px;
+  transition:0.2s ease;
+}
+
+.nav-btn img{
+  width:20px;
+  height:20px;
+  transition:0.2s ease;
+}
+
+/* TEXT DEFAULT HIDDEN */
+.nav-btn .text{
+  opacity:0;
+  transform:translateY(4px);
+  font-size:11px;
+  transition:0.25s ease;
+}
+
+/* ACTIVE STATE */
+.nav-btn.active-nav{
   color:#111;
-  font-size:14px;
-  font-weight:500;
-  border: 0px solid black;
 }
 
-/* ==================== MODAL ==================== */
+.nav-btn.active-nav .text{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.nav-btn.active-nav .icon{
+  transform:translateY(-2px) scale(1.05);
+}
+
+.nav-btn.active-nav img{
+  transform:translateY(-2px) scale(1.05);
+}
+
+/* HOVER EFFECT */
+.nav-btn:hover{
+  color:#111;
+}
+/* ==================== MODAL (PREMIUM POPUP) ==================== */
 .modal{
   display:none;
   position:fixed;
@@ -153,28 +239,36 @@ input::placeholder{
   left:0;
   width:100%;
   height:100%;
-  background:rgba(0,0,0,0.45);
+  background:rgba(0,0,0,0.55);
   justify-content:center;
   align-items:center;
+  backdrop-filter:blur(6px);
 }
 
 .modal-content{
   background:#fff;
-  width:90%;
-  max-width:380px;
-  border-radius:16px;
-  padding:16px;
+  width:92%;
+  max-width:400px;
+  border-radius:18px;
+  padding:18px;
   text-align:center;
-  border:1px solid #eee;
-  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  border:1px solid rgba(0,0,0,0.08);
+  box-shadow:0 25px 80px rgba(0,0,0,0.25);
+  animation:pop 0.25s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(0.9);opacity:0}
+  to{transform:scale(1);opacity:1}
 }
 
 .modal-content img{
   width:100%;
-  border-radius:12px;
+  border-radius:14px;
   margin-bottom:12px;
 }
 
+/* ==================== QTY ==================== */
 .qty-box{
   display:flex;
   justify-content:center;
@@ -184,20 +278,21 @@ input::placeholder{
 }
 
 .qty-box button{
-  width:38px;
-  height:38px;
+  width:40px;
+  height:40px;
   border-radius:50%;
   background:#111;
   color:#fff;
+  box-shadow:0 6px 15px rgba(0,0,0,0.2);
 }
 
-/* ==================== CLOSE ==================== */
+/* ==================== CLOSE BUTTON ==================== */
 .close-btn{
-  background:#f3f3f3;
+  background:#f5f5f5;
   color:#111;
   width:100%;
   margin-top:10px;
-  border:1px solid #ddd;
+  border:1px solid rgba(0,0,0,0.08);
 }
 
 .close-btn:hover{
@@ -247,13 +342,33 @@ input::placeholder{
 
 <!-- ==================== NAVBAR ==================== -->
 <div class="navbar">
-  <button onclick="showPage('menu')">Menu</button>
-  <button onclick="showPage('discount')">Skidka</button>
-  <button onclick="showPage('cart');loadCart()">Savatcha</button>
-  <button onclick="showPage('history');renderHistory()">Tarix</button>
-  <button onclick="showPage('profile');loadProfile()">Profil</button>
-</div>
 
+  <button class="nav-btn active-nav" onclick="setNav(this);showPage('menu')">
+    <img src="icons/home.png" class="icon">
+    <span class="text">Menu</span>
+  </button>
+
+  <button class="nav-btn" onclick="setNav(this);showPage('discount')">
+    <img src="icons/fire.png" class="icon">
+    <span class="text">Skidka</span>
+  </button>
+
+  <button class="nav-btn" onclick="setNav(this);showPage('cart');loadCart()">
+    <img src="icons/cart.png" class="icon">
+    <span class="text">Savatcha</span>
+  </button>
+
+  <button class="nav-btn" onclick="setNav(this);showPage('history');renderHistory()">
+    <img src="icons/history.png" class="icon">
+    <span class="text">Tarix</span>
+  </button>
+
+  <button class="nav-btn" onclick="setNav(this);showPage('profile');loadProfile()">
+    <img src="icons/user.png" class="icon">
+    <span class="text">Profil</span>
+  </button>
+
+</div>
 <!-- ==================== MODAL ==================== -->
 <div id="productModal" class="modal">
   <div class="modal-content">
@@ -301,6 +416,13 @@ function applyLang(){
     profileTitle.innerText="Profil";
     orderBtn.innerText="Buyurtma berish";
   }
+}
+
+function setNav(el){
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.remove('active-nav');
+  });
+  el.classList.add('active-nav');
 }
 
 function renderProducts(){
