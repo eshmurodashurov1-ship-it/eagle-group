@@ -396,9 +396,7 @@ let products=[
   {name:'Faberlic Botanica - shampun --1272',price:55000,img:'https://basket-34.wbbasket.ru/vol7223/part722352/722352446/images/big/1.webp'},
 ];
 
-let discounts=[
-  {}
-];
+let discounts=[];
 
 let cart=JSON.parse(localStorage.getItem('cart'))||[];
 let history=JSON.parse(localStorage.getItem('history'))||[];
@@ -431,11 +429,72 @@ function setNav(el){
   el.classList.add('active-nav');
 }
 
+function similarity(a,b){
+  a=a.toLowerCase();
+  b=b.toLowerCase();
+
+  let longer=a.length>b.length?a:b;
+  let shorter=a.length>b.length?b:a;
+
+  let longerLength=longer.length;
+
+  if(longerLength===0) return 1;
+
+  return (longerLength-editDistance(longer,shorter))/parseFloat(longerLength);
+}
+
+function editDistance(a,b){
+  a=a.toLowerCase();
+  b=b.toLowerCase();
+
+  let costs=[];
+
+  for(let i=0;i<=a.length;i++){
+    let lastValue=i;
+
+    for(let j=0;j<=b.length;j++){
+      if(i===0)
+        costs[j]=j;
+      else{
+        if(j>0){
+          let newValue=costs[j-1];
+
+          if(a.charAt(i-1)!==b.charAt(j-1))
+            newValue=Math.min(Math.min(newValue,lastValue),costs[j])+1;
+
+          costs[j-1]=lastValue;
+          lastValue=newValue;
+        }
+      }
+    }
+
+    if(i>0)
+      costs[b.length]=lastValue;
+  }
+
+  return costs[b.length];
+}
+
 function renderProducts(){
-  let q=searchMenu.value.toLowerCase();
+  let q=searchMenu.value.toLowerCase().trim();
+
   productList.innerHTML="";
-  products.filter(p=>p.name.toLowerCase().includes(q))
+
+  products.filter(p=>{
+
+    let name=p.name.toLowerCase();
+
+    // oddiy search
+    if(name.includes(q)) return true;
+
+    // fuzzy search
+    let words=name.split(" ");
+
+    return words.some(word=>similarity(word,q)>0.6);
+
+  })
   .forEach(p=>{
+
     productList.innerHTML+=`
     <div class='product' onclick='openModal(${JSON.stringify(p)})'>
       <img src='${p.img}'>
@@ -444,6 +503,7 @@ function renderProducts(){
         <p>${p.price.toLocaleString()} uzs</p>
       </div>
     </div>`;
+
   });
 }
 
