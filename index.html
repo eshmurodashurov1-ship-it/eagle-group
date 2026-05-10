@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EagleGroup</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==================== BODY ==================== */
+/* ==================== GLOBAL ==================== */
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:#ffffff;
+  color:#111;
+  -webkit-font-smoothing:antialiased;
+}
+
+.page{
+  display:none;
+  padding:16px;
+  padding-bottom:120px;
+}
+
+.active{display:block;}
+
+h3{
+  margin:0 0 15px 0;
+  font-weight:600;
+  letter-spacing:0.3px;
+}
+
+/* ==================== GRID ==================== */
+#productList,
+#discountList{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:14px;
+}
+
+/* ==================== PRODUCT CARD ==================== */
+.product,.cart-item,.history-item{
+  background:#fff;
+  border:0px solid #e6e6e6;
+  border-radius:18px;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:10px;
+  cursor:pointer;
+  transition:0.2s ease;
+  box-shadow:0 6px 18px rgba(0, 0, 0, 0.163);
+}
+
+.product:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+.product img,.cart-item img,.history-item img{
+  width:65%;
+  border-radius:12px;
+  object-fit:cover;
+}
+
+/* ==================== BUTTONS ==================== */
+button{
+  padding:12px 14px;
+  border-radius:10px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s ease;
+  letter-spacing:0.2px;
+}
+
+.primary{
+  background:#111;
+  color:#fff;
+}
+
+.primary:hover{
+  background:#000;
+  transform:scale(1.02);
+}
+
+.secondary{
+  background:#f4f4f4;
+  color:#111;
+  border:1px solid #e0e0e0;
+}
+
+.secondary:hover{
+  background:#eaeaea;
+}
+
+button:disabled{
+  background:#ddd;
+  color:#888;
+  cursor:not-allowed;
+}
+
+/* ==================== INPUT ==================== */
+input{
+  width:95%;
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #e5e5e5;
+  background:#fafafa;
+  color:#111;
+  margin-bottom:10px;
+  outline:none;
+  transition:0.2s;
+}
+
+input:focus{
+  border-color:#111;
+  background:#fff;
+}
+
+input::placeholder{
+  color:#999;
+}
+
+/* ==================== NAVBAR ==================== */
+.navbar{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:rgba(255,255,255);
+  display:flex;
+  justify-content:space-around;
+  padding:16px 0;
+  border-top:0px solid #e6e6e6;
+  box-shadow: 7px 7px 7px 7px rgba(0, 0, 0, 0.143);
+}
+
+.navbar button{
+  background: rgba(0, 0, 0, 0.058);
+  color:#111;
+  font-size:14px;
+  font-weight:500;
+  border: 0px solid black;
+}
+
+/* ==================== MODAL ==================== */
+.modal{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.45);
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:#fff;
+  width:90%;
+  max-width:380px;
+  border-radius:16px;
+  padding:16px;
+  text-align:center;
+  border:1px solid #eee;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-content img{
+  width:100%;
+  border-radius:12px;
+  margin-bottom:12px;
+}
+
+.qty-box{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.qty-box button{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#111;
+  color:#fff;
+}
+
+/* ==================== CLOSE ==================== */
+.close-btn{
+  background:#f3f3f3;
+  color:#111;
+  width:100%;
+  margin-top:10px;
+  border:1px solid #ddd;
+}
+
+.close-btn:hover{
+  background:#eaeaea;
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== MENU ==================== -->
+<div id="menu" class="page active">
+  <h3 id="menuTitle">Mahsulotlar</h3>
+  <input class="search" type="text" id="searchMenu" placeholder="Qidirish..." oninput="renderProducts()">
+  <div id="productList"></div>
+</div>
+
+<!-- ==================== DISCOUNT ==================== -->
+<div id="discount" class="page">
+  <h3 id="discountTitle">Skidkalar</h3>
+  <input class="search" type="text" id="searchDiscount" placeholder="Qidirish..." oninput="renderDiscounts()">
+  <div id="discountList"></div>
+</div>
+
+<!-- ==================== CART ==================== -->
+<div id="cart" class="page">
+  <h3 id="cartTitle">Savatcha</h3>
+  <input type="text" id="cartName" placeholder="Ism Familiya" oninput="checkOrderBtn()">
+  <input type="text" id="cartPhone" placeholder="+998901234567" oninput="checkOrderBtn()">
+  <div id="cartItems"></div>
+  <h3 id="total"></h3>
+  <button id="orderBtn" class="primary" onclick="sendOrder()" disabled>Buyurtma berish</button>
+</div>
+
+<!-- ==================== HISTORY ==================== -->
+<div id="history" class="page">
+  <h3 id="historyTitle">Buyurtmalar tarixi</h3>
+  <div id="historyList"></div>
+</div>
+
+<!-- ==================== PROFILE ==================== -->
+<div id="profile" class="page">
+  <h3 id="profileTitle">Profil</h3>
+  <input type="text" id="profileName" placeholder="Ism Familiya">
+  <input type="text" id="profilePhone" placeholder="+998901234567">
+  <button class="primary" onclick="saveProfile()" style="border: 3px solid #fff; border-radius: 10px; color: #ffffff; padding: 2% 5%;">Saqlash</button>
+</div>
+
+<!-- ==================== NAVBAR ==================== -->
+<div class="navbar">
+  <button onclick="showPage('menu')">Menu</button>
+  <button onclick="showPage('discount')">Skidka</button>
+  <button onclick="showPage('cart');loadCart()">Savatcha</button>
+  <button onclick="showPage('history');renderHistory()">Tarix</button>
+  <button onclick="showPage('profile');loadProfile()">Profil</button>
+</div>
+
+<!-- ==================== MODAL ==================== -->
+<div id="productModal" class="modal">
+  <div class="modal-content">
+    <img id="modalImg">
+    <h3 id="modalName"></h3>
+    <p id="modalPrice"></p>
+    <div id="modalAction"></div>
+    <button class="close-btn" onclick="closeModal()">Yopish</button>
+  </div>
+</div>
+
+<script>
+const botToken="8273671173:AAFhV95y1VN3bEcj1QSbXlSaqrsSYAGnijg";
+const chatId="8336275561";
+let lang=localStorage.getItem("lang")||"uz";
+
+let products=[
+  {name:'8 ELEMENT',price:42000,img:'https://cdn1.ozone.ru/s3/multimedia-1-2/7552305362.jpg'},
+  {name:'Fairy Baby 1-olcham lipuchka pampers',price:45000,img:'https://avatars.mds.yandex.net/i?id=e6a9e77e279d77465f5e7e0a67c727eb026cb3e3-13219746-images-thumbs&n=13'}
+];
+
+let discounts=[
+  {name:'Eron gel (ko`k)',price:85000,img:'https://images.uzum.uz/d2rg88b4eu2h0tmq7hj0/original.jpg',old:95000}
+];
+
+let cart=JSON.parse(localStorage.getItem('cart'))||[];
+let history=JSON.parse(localStorage.getItem('history'))||[];
+let profile=JSON.parse(localStorage.getItem('profile'))||{};
+let currentProduct=null;
+
+function setLang(l){lang=l;localStorage.setItem("lang",l);applyLang();}
+function applyLang(){
+  if(lang==="ru"){
+    menuTitle.innerText="Товары";
+    discountTitle.innerText="Скидки";
+    cartTitle.innerText="Корзина";
+    historyTitle.innerText="История заказов";
+    profileTitle.innerText="Профиль";
+    orderBtn.innerText="Оформить заказ";
+  }else{
+    menuTitle.innerText="Mahsulotlar";
+    discountTitle.innerText="Skidkalar";
+    cartTitle.innerText="Savatcha";
+    historyTitle.innerText="Buyurtmalar tarixi";
+    profileTitle.innerText="Profil";
+    orderBtn.innerText="Buyurtma berish";
+  }
+}
+
+function renderProducts(){
+  let q=searchMenu.value.toLowerCase();
+  productList.innerHTML="";
+  products.filter(p=>p.name.toLowerCase().includes(q))
+  .forEach(p=>{
+    productList.innerHTML+=`
+    <div class='product' onclick='openModal(${JSON.stringify(p)})'>
+      <img src='${p.img}'>
+      <div>
+        <h4>${p.name}</h4>
+        <p>${p.price.toLocaleString()} uzs</p>
+      </div>
+    </div>`;
+  });
+}
+
+function renderDiscounts(){
+  let q=searchDiscount.value.toLowerCase();
+  discountList.innerHTML="";
+  discounts.filter(p=>p.name.toLowerCase().includes(q))
+  .forEach(p=>{
+    discountList.innerHTML+=`
+    <div class='product' onclick='openModal(${JSON.stringify(p)})'>
+      <img src='${p.img}'>
+      <div>
+        <h4>${p.name}</h4>
+        <p><s>${p.old.toLocaleString()}</s> → ${p.price.toLocaleString()} uzs</p>
+      </div>
+    </div>`;
+  });
+}
+
+function openModal(p){
+  currentProduct=p;
+  modalImg.src=p.img;
+  modalName.innerText=p.name;
+  modalPrice.innerText=p.price.toLocaleString()+" uzs";
+  updateModalButtons();
+  productModal.style.display="flex";
+}
+
+function closeModal(){productModal.style.display="none";}
+
+function updateModalButtons(){
+  let item=cart.find(i=>i.name===currentProduct.name);
+  if(item){
+    modalAction.innerHTML=`<div class="qty-box">
+      <button onclick="changeQty(-1)">-</button>
+      <span>${item.qty}</span>
+      <button onclick="changeQty(1)">+</button>
+    </div>`;
+  }else{
+    modalAction.innerHTML=`<button class="primary" onclick="addToCart()">Savatchaga qo'shish</button>`;
+  }
+}
+
+function addToCart(){
+  let item=cart.find(i=>i.name===currentProduct.name);
+  if(item)item.qty++;
+  else cart.push({...currentProduct,qty:1});
+  localStorage.setItem("cart",JSON.stringify(cart));
+  updateModalButtons();
+  loadCart();
+}
+
+function changeQty(v){
+  let item=cart.find(i=>i.name===currentProduct.name);
+  if(!item) return;
+  item.qty+=v;
+  if(item.qty<=0) cart=cart.filter(i=>i.name!==currentProduct.name);
+  localStorage.setItem("cart",JSON.stringify(cart));
+  updateModalButtons();
+  loadCart();
+}
+
+function loadCart(){
+  cartItems.innerHTML="";
+  let total=0;
+  cart.forEach(i=>{
+    total+=i.price*i.qty;
+    cartItems.innerHTML+=`
+    <div class="cart-item">
+      <div style="flex:1">${i.name} x${i.qty}</div>
+      <div>
+        <button class="secondary" onclick="adjustCart('${i.name}',-1)">-</button>
+        <button class="secondary" onclick="adjustCart('${i.name}',1)">+</button>
+      </div>
+    </div>`;
+  });
+  totalElem=document.getElementById("total");
+  totalElem.innerText="Jami: "+total.toLocaleString()+" uzs";
+  if(profile.name) cartName.value=profile.name;
+  if(profile.phone) cartPhone.value=profile.phone;
+  checkOrderBtn();
+}
+
+function adjustCart(name,v){
+  let item=cart.find(i=>i.name===name);
+  if(!item) return;
+  item.qty+=v;
+  if(item.qty<=0) cart=cart.filter(i=>i.name!==name);
+  localStorage.setItem("cart",JSON.stringify(cart));
+  loadCart();
+  if(currentProduct && currentProduct.name===name) updateModalButtons();
+}
+
+function checkOrderBtn(){
+  let name=cartName.value.trim();
+  let phone=cartPhone.value.trim();
+  orderBtn.disabled=!(name && phone && cart.length>0);
+}
+
+function sendOrder(){
+  let name=cartName.value.trim();
+  let phone=cartPhone.value.trim();
+  if(!name || !phone || cart.length===0) return;
+  profile={name,phone};
+  localStorage.setItem("profile",JSON.stringify(profile));
+  let total=0;
+  let message="🛒 NEW ORDER\n\n👤 Name: "+name+"\n📞 Phone: "+phone+"\n\n📦 Products:\n";
+  cart.forEach(i=>{
+    message+=i.name+" x"+i.qty+" - "+(i.price*i.qty).toLocaleString()+" uzs\n";
+    total+=i.price*i.qty;
+  });
+  message+="\n💰 Total: "+total.toLocaleString()+" uzs";
+  fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+  .then(res=>{
+    if(res.ok){
+      alert("Buyurtma yuborildi!");
+      history.push({name,phone,items:[...cart],total});
+      localStorage.setItem("history",JSON.stringify(history));
+      cart=[];
+      localStorage.setItem("cart",JSON.stringify(cart));
+      loadCart();
+    }else alert("Telegramga yuborishda xatolik!");
+  });
+}
+
+function renderHistory(){
+  historyList.innerHTML="";
+  history.forEach(h=>{
+    let itemsText=h.items.map(it=>it.name+" x"+it.qty).join(", ");
+    historyList.innerHTML+=`
+    <div class="history-item">
+      <div style="flex:1">${h.name} | ${h.phone}</div>
+      <div>${itemsText} | Jami: ${h.total.toLocaleString()} so'm   ---   SIZGA +998879071611 TELEFON RAQAMIDAN QO'NG'IROQ QILISHADI!</div>
+    </div>`;
+  });
+}
+
+function saveProfile(){
+  profile={name:profileName.value,phone:profilePhone.value};
+  localStorage.setItem("profile",JSON.stringify(profile));
+  alert(lang==="ru"?"Сохранено!":"Saqlandi");
+}
+
+function loadProfile(){
+  profileName.value=profile.name||"";
+  profilePhone.value=profile.phone||"";
+}
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+window.onload=function(){
+  renderProducts();
+  renderDiscounts();
+  applyLang();
+  loadProfile();
+};
+</script>
+</body>
+</html>
