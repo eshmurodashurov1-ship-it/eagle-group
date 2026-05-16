@@ -664,5 +664,25 @@ window.onload=function(){
   loadProfile();
 };
 </script>
+<script type="module">
+
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD0aXqLiA-GSAeXdbz9YDVcQsbN3XTJGeo",
+  authDomain: "eagle-group-545ba.firebaseapp.com",
+  projectId: "eagle-group-545ba",
+  storageBucket: "eagle-group-545ba.firebasestorage.app",
+  messagingSenderId: "803658294353",
+  appId: "1:803658294353:web:9b1917a7fcc79d6666c470",
+  measurementId: "G-RKEXBRF5C3"
+};
+
+const app = initializeApp(firebaseConfig);
+
+console.log("Firebase connected!");
+
+</script>
 </body>
 </html>
