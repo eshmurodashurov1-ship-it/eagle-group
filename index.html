@@ -330,7 +330,6 @@ input::placeholder{
   <input class="search" type="text" id="searchMenu" placeholder="Qidirish..." oninput="renderProducts()">
   <div id="productList"></div>
 </div>
-  <div id="productsContainer"></div>
 
 <!-- ==================== DISCOUNT ==================== -->
 <div id="discount" class="page">
@@ -407,17 +406,6 @@ input::placeholder{
 const botToken="8273671173:AAFhV95y1VN3bEcj1QSbXlSaqrsSYAGnijg";
 const chatId="8336275561";
 let lang=localStorage.getItem("lang")||"uz";
-
-let products=[
-  {name:'8 ELEMENT - erkaklar uchun shampun',price:42000,img:'https://cdn1.ozone.ru/s3/multimedia-1-2/7552305362.jpg'},
-  {name:'Bavi 60gram - oqartiruvchi',price:11000,img:'https://images.uzum.uz/d5foln0jsv1neactejk0/original.jpg'},
-  {name:'Bavi 350gram - oqartiruvchi',price:45000,img:'https://basket-34.wbbasket.ru/vol7093/part709364/709364966/images/big/1.webp'},
-  {name:'Faberlic Botanica - shampun --1317',price:55000,img:'https://basket-10.wbbasket.ru/vol1403/part140375/140375431/images/big/1.webp'},
-  {name:'Faberlic Botanica - shampun --1281',price:55000,img:'https://cdn1.ozone.ru/s3/multimedia-1-y/c600/7091265670.jpg'},
-  {name:'Faberlic Botanica - shampun --1273',price:55000,img:'https://basket-09.wbbasket.ru/vol1182/part118243/118243000/images/big/1.webp'},
-  {name:'Faberlic Botanica - shampun --7771',price:55000,img:'https://basket-14.wbbasket.ru/vol2068/part206888/206888789/images/big/1.webp'},
-  {name:'Faberlic Botanica - shampun --1272',price:55000,img:'https://basket-34.wbbasket.ru/vol7223/part722352/722352446/images/big/1.webp'},
-];
 
 let discounts=[];
 
@@ -681,7 +669,28 @@ function showPage(id){
 }
 
 window.onload=function(){
-  renderProducts();
+  async function renderProducts() {
+  const querySnapshot = await getDocs(collection(db, "products"));
+
+  const q = searchMenu.value.toLowerCase().trim();
+  productList.innerHTML = "";
+
+  querySnapshot.forEach((doc) => {
+    const p = doc.data();
+
+    if (!p.name.toLowerCase().includes(q)) return;
+
+    productList.innerHTML += `
+      <div class='product' onclick='openModal(${JSON.stringify(p)})'>
+        <img src='${p.image}'>
+        <div>
+          <h4>${p.name}</h4>
+          <p>${p.price.toLocaleString()} uzs</p>
+        </div>
+      </div>
+    `;
+  });
+}
   renderDiscounts();
   applyLang();
   loadProfile();
