@@ -231,197 +231,103 @@ button{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 /* ================= FIREBASE ================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyD0aXqLiA-GSAeXdbz9YDVcQsbN3XTJGeo",
-  authDomain: "eagle-group-545ba.firebaseapp.com",
-  projectId: "eagle-group-545ba",
-  storageBucket: "eagle-group-545ba.firebasestorage.app",
-  messagingSenderId: "803658294353",
-  appId: "1:803658294353:web:9b1917a7fcc79d6666c470",
-  measurementId: "G-RKEXBRF5C3"
-};
-
-const app = initializeApp(firebaseConfig);
+const app = initializeApp({
+  apiKey: "YOUR",
+  authDomain: "YOUR",
+  projectId: "YOUR",
+});
 const db = getFirestore(app);
 
-/* ================= DATA ================= */
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let productsCache = [];
-let currentProduct = null;
-let isLoaded = false;
+/* ================= STATE ENGINE ================= */
+const STATE = {
+  products: [],
+  cart: JSON.parse(localStorage.getItem("cart")) || [],
+  user: null,
+  currentProduct: null,
+  loading: false
+};
 
-/* ================= LOADER ================= */
-function showLoader(v){
-  const el = document.getElementById("loader");
-  if(!el) return;
-  el.classList.toggle("hidden", !v);
-}
+/* ================= RENDER ENGINE ================= */
+const UI = {
+  renderProducts(list){
+    const box = document.getElementById("grid");
+    box.innerHTML = list.map(p=>`
+      <div class="card" onclick="APP.openProduct('${p.id}')">
+        <img src="${p.image}">
+        <b>${p.name}</b>
+        <p>${p.price} so'm</p>
+      </div>
+    `).join("");
+  },
 
-/* ================= PAGE ================= */
+  renderCart(){
+    const box = document.getElementById("cartBox");
+    box.innerHTML = STATE.cart.map(i=>`
+      <div>${i.name} x${i.qty}</div>
+    `).join("");
+  },
+
+  showLoader(v){
+    document.getElementById("loader").style.display = v ? "flex":"none";
+  }
+};
+
+/* ================= APP CORE ================= */
+const APP = {
+
+  async init(){
+    UI.showLoader(true);
+    await this.loadProducts();
+    UI.renderProducts(STATE.products);
+    UI.renderCart();
+    UI.showLoader(false);
+  },
+
+  async loadProducts(){
+    const snap = await getDocs(collection(db,"products"));
+    STATE.products = snap.docs.map(d=>({id:d.id,...d.data()}));
+  },
+
+  openProduct(id){
+    STATE.currentProduct = STATE.products.find(p=>p.id===id);
+
+    document.getElementById("dimg").src = STATE.currentProduct.image;
+    document.getElementById("dname").innerText = STATE.currentProduct.name;
+    document.getElementById("dprice").innerText = STATE.currentProduct.price;
+
+    setPage("detail");
+  },
+
+  addToCart(){
+    const p = STATE.currentProduct;
+    let item = STATE.cart.find(i=>i.id===p.id);
+
+    if(item) item.qty++;
+    else STATE.cart.push({...p, qty:1});
+
+    localStorage.setItem("cart", JSON.stringify(STATE.cart));
+    UI.renderCart();
+  }
+};
+
+/* ================= GLOBAL ================= */
+window.APP = APP;
+
 window.setPage = function(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* ================= PRODUCTS (FAST FIX) ================= */
-window.renderProducts = async function(){
-
-  const box = document.getElementById("productList");
-  const q = (document.getElementById("search")?.value || "").toLowerCase();
-
-  // 🔥 loader faqat 1 marta show
-  if(!isLoaded) showLoader(true);
-
-  try {
-
-    // 🔥 FIREBASE 1 MARTA
-    if(!isLoaded){
-      const snap = await getDocs(collection(db,"products"));
-
-      productsCache = snap.docs.map(doc => {
-        const d = doc.data();
-        return {
-          name: d.name || "",
-          price: d.price || 0,
-          image: d.image || "",
-          description: d.description || ""
-        };
-      });
-
-      isLoaded = true;
-      showLoader(false);
-    }
-
-    // ⚡ render FAST (no blocking UI)
-    requestAnimationFrame(() => {
-      box.innerHTML = "";
-
-      productsCache
-        .filter(p => p.name.toLowerCase().includes(q))
-        .forEach(p => {
-          const safe = encodeURIComponent(JSON.stringify(p));
-
-          box.innerHTML += `
-            <div class="product" onclick='openModal(decodeURIComponent("${safe}"))'>
-              <img src="${p.image}">
-              <b>${p.name}</b>
-              <p>${p.price} so'm</p>
-            </div>
-          `;
-        });
-    });
-
-  } catch(e){
-    console.log(e);
-    showLoader(false);
-  }
-}
-
-/* ================= MODAL SAFE FIX ================= */
-window.openModal = function(p){
-
-  try{
-    if(typeof p === "string") p = JSON.parse(p);
-  }catch(e){ return; }
-
-  currentProduct = p;
-
-  document.getElementById("mimg").src = p.image;
-  document.getElementById("mname").innerText = p.name;
-  document.getElementById("mprice").innerText = p.price + " so'm";
-
-  document.getElementById("modal").style.display = "flex";
-}
-
-window.closeModal = function(){
-  document.getElementById("modal").style.display = "none";
-}
-
-/* ================= CART FIX ================= */
-window.addFromModal = function(){
-
-  if(!currentProduct) return;
-
-  let item = cart.find(i=>i.name===currentProduct.name);
-
-  if(item) item.qty++;
-  else cart.push({...currentProduct, qty:1});
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  loadCart();
-  closeModal();
-}
-
-/* ================= CART ================= */
-window.loadCart = function(){
-
-  const box = document.getElementById("cartItems");
-  if(!box) return;
-
-  box.innerHTML = "";
-  let total = 0;
-
-  cart.forEach(i=>{
-    total += (i.price||0)*(i.qty||1);
-
-    box.innerHTML += `
-      <div class="cart-item">
-        <span>${i.name} x${i.qty}</span>
-      </div>
-    `;
-  });
-
-  const totalEl = document.getElementById("total");
-  if(totalEl) totalEl.innerText = "Jami: " + total;
-
-  const btn = document.getElementById("orderBtn");
-  if(btn){
-    btn.disabled = !(document.getElementById("name")?.value && cart.length);
-  }
-}
-
-/* ================= ORDER ================= */
-window.sendOrder = async function(){
-
-  showLoader(true);
-
-  try{
-    await addDoc(collection(db,"orders"),{
-      name: document.getElementById("name").value,
-      phone: document.getElementById("phone").value,
-      cart,
-      total: cart.reduce((a,b)=>a+(b.price||0)*(b.qty||1),0),
-      time: new Date()
-    });
-
-    cart = [];
-    localStorage.removeItem("cart");
-    loadCart();
-
-    alert("Buyurtma yuborildi!");
-
-  }catch(e){
-    console.log(e);
-  }
-
-  showLoader(false);
-}
-
-/* ================= INIT FAST ================= */
-window.onload = function(){
-
-  // UI darrov chiqadi
-  loadCart();
-
-  // background load
-  setTimeout(() => renderProducts(), 0);
-
-  showLoader(false);
-}
+/* ================= INIT ================= */
+window.onload = ()=>APP.init();
 
 </script>
 
