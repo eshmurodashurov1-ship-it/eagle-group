@@ -686,7 +686,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-console.log("Firebase connected!");
+const db = getFirestore(app);
+
+console.log("Firestore connected!");
 
 </script>
 </body>
