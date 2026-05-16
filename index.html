@@ -248,12 +248,12 @@ const db = getFirestore(app);
 
 /* ================= DATA ================= */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let products = [];
+let productsCache = [];   // ✅ FIX 1
 let currentProduct = null;
 
 /* ================= LOADER ================= */
 function showLoader(v){
-  document.getElementById("loader").style.display = v ? "block":"none";
+  document.getElementById("loader").classList.toggle("hidden", !v);
 }
 
 /* ================= PAGE ================= */
@@ -262,7 +262,7 @@ window.setPage = function(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* ================= PRODUCTS ================= */
+/* ================= PRODUCTS (FAST + CACHE) ================= */
 window.renderProducts = async function(){
 
   const box = document.getElementById("productList");
@@ -272,20 +272,19 @@ window.renderProducts = async function(){
 
   try {
 
-    // CACHE (ENG MUHIM FIX)
-    if(!productCache){
+    // 🔥 faqat 1 marta Firebasedan oladi
+    if(productsCache.length === 0){
       const snap = await getDocs(collection(db,"products"));
-      productCache = [];
 
       snap.forEach(doc=>{
-        productCache.push(doc.data());
+        productsCache.push(doc.data());
       });
     }
 
-    box.innerHTML="";
+    box.innerHTML = "";
 
-    productCache
-      .filter(p=>p.name.toLowerCase().includes(q))
+    productsCache
+      .filter(p => p.name.toLowerCase().includes(q))
       .forEach(p=>{
         box.innerHTML += `
           <div class="product" onclick='openModal(${JSON.stringify(p)})'>
@@ -297,7 +296,7 @@ window.renderProducts = async function(){
       });
 
   } catch(e){
-    console.log(e);
+    console.log("Firebase error:", e);
   }
 
   showLoader(false);
@@ -319,9 +318,9 @@ window.closeModal = function(){
 window.addFromModal = function(){
   let item = cart.find(i=>i.name===currentProduct.name);
   if(item) item.qty++;
-  else cart.push({...currentProduct,qty:1});
+  else cart.push({...currentProduct, qty:1});
 
-  localStorage.setItem("cart",JSON.stringify(cart));
+  localStorage.setItem("cart", JSON.stringify(cart));
   loadCart();
   closeModal();
 }
@@ -334,7 +333,7 @@ window.loadCart = function(){
   let total=0;
 
   cart.forEach(i=>{
-    total += i.price*i.qty;
+    total += i.price * i.qty;
 
     box.innerHTML += `
       <div class="cart-item">
@@ -343,7 +342,7 @@ window.loadCart = function(){
     `;
   });
 
-  document.getElementById("total").innerText="Jami: "+total;
+  document.getElementById("total").innerText = "Jami: " + total;
 
   document.getElementById("orderBtn").disabled =
     !(document.getElementById("name").value && cart.length);
@@ -352,29 +351,44 @@ window.loadCart = function(){
 /* ================= ORDER ================= */
 window.sendOrder = async function(){
 
-let productCache = null;
-let isLoaded = false;
+  showLoader(true);
 
-function showLoader(v){
-  document.getElementById("loader").classList.toggle("hidden", !v);
+  try{
+    await addDoc(collection(db,"orders"),{
+      name: document.getElementById("name").value,
+      phone: document.getElementById("phone").value,
+      cart,
+      total: cart.reduce((a,b)=>a + b.price*b.qty, 0),
+      time: new Date()
+    });
+
+    cart = [];
+    localStorage.removeItem("cart");
+    loadCart();
+
+    alert("Buyurtma yuborildi!");
+
+  } catch(e){
+    console.log(e);
+  }
+
+  showLoader(false);
 }
 
 /* ================= PROFILE ================= */
 window.saveProfile = function(){
-  localStorage.setItem("profile",JSON.stringify({
-    name:document.getElementById("pname").value,
-    phone:document.getElementById("pphone").value
+  localStorage.setItem("profile", JSON.stringify({
+    name: document.getElementById("pname").value,
+    phone: document.getElementById("pphone").value
   }));
   alert("Saved");
 }
 
 /* ================= INIT ================= */
 window.onload = async function(){
-
   showLoader(true);
 
-  await renderProducts(); // 1 marta
-
+  await renderProducts();
   loadCart();
 
   showLoader(false);
