@@ -670,9 +670,12 @@ import { initializeApp } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-  getFirestore
-} from 
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyD0aXqLiA-GSAeXdbz9YDVcQsbN3XTJGeo",
@@ -687,6 +690,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
+
+async function getProducts() {
+  const querySnapshot = await getDocs(collection(db, "products"));
+
+  querySnapshot.forEach((doc) => {
+    console.log("Product:", doc.id, doc.data());
+  });
+}
+
+getProducts();
 
 console.log("Firestore connected!");
 
