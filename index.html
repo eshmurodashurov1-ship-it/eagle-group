@@ -3,675 +3,205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EagleGroup</title>
+<title>EagleGroup Firebase</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-/* ==================== BODY ==================== */
-/* ==================== GLOBAL ==================== */
-body{
-  margin:0;
-  font-family:'Poppins',sans-serif;
-  background:#f7f7f8;
-  color:#111;
-  -webkit-font-smoothing:antialiased;
-  -webkit-tap-highlight-color:transparent;
-}
+body{margin:0;font-family:Poppins;background:#f7f7f8}
+.page{display:none;padding:18px}
+.active{display:block}
 
-.page{
-  display:none;
-  padding:18px;
-  padding-bottom:130px;
-}
-
-.active{display:block;}
-
-h3{
-  margin:0 0 16px 0;
-  font-weight:600;
-  letter-spacing:0.2px;
-  font-size:18px;
-}
-
-/* ==================== GRID ==================== */
-#productList,
-#discountList{
-  display:grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap:14px;
-}
-
-/* ==================== PRODUCT CARD (PRO) ==================== */
-.product,.cart-item,.history-item{
-  background:linear-gradient(145deg,#ffffff,#f5f5f5);
-  border:1px solid rgba(0,0,0,0.06);
-  border-radius:18px;
-  padding:14px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  gap:10px;
-  cursor:pointer;
-  transition:all 0.25s ease;
-  box-shadow:0 8px 22px rgba(0,0,0,0.08);
-  position:relative;
-  overflow:hidden;
-}
-
-/* soft hover depth */
-.product:hover{
-  transform:translateY(-4px) scale(1.01);
-  box-shadow:0 14px 35px rgba(0,0,0,0.12);
-}
-
-/* subtle shine effect */
-.product::after{
-  content:'';
-  position:absolute;
-  top:-50%;
-  left:-50%;
-  width:200%;
-  height:200%;
-  background:radial-gradient(circle,rgba(255,255,255,0.35),transparent 60%);
-  opacity:0;
-  transition:0.4s;
-}
-
-.product:hover::after{
-  opacity:1;
-}
-
-/* images */
-.product img,.cart-item img,.history-item img{
-  width:68%;
-  border-radius:14px;
-  object-fit:cover;
-  transition:0.3s;
-}
-
-.product:hover img{
-  transform:scale(1.03);
-}
-
-/* ==================== BUTTONS (APPLE STYLE) ==================== */
-button{
-  padding:12px 14px;
-  border-radius:12px;
-  border:none;
-  font-weight:600;
-  cursor:pointer;
-  transition:all 0.2s ease;
-  letter-spacing:0.2px;
-  font-size:14px;
-}
-
-/* primary */
-.primary{
-  background:#111;
-  color:#fff;
-  box-shadow:0 6px 15px rgba(0,0,0,0.2);
-}
-
-.primary:hover{
-  background:#000;
-  transform:translateY(-2px);
-  box-shadow:0 10px 25px rgba(0,0,0,0.25);
-}
-
-/* secondary */
-.secondary{
-  background:#ffffff;
-  color:#111;
-  border:1px solid rgba(0,0,0,0.1);
-}
-
-.secondary:hover{
-  background:#f2f2f2;
-}
-
-/* disabled */
-button:disabled{
-  background:#e5e5e5;
-  color:#999;
-  cursor:not-allowed;
-  box-shadow:none;
-}
-
-/* ==================== INPUT (MODERN APP STYLE) ==================== */
-input{
-  width:95%;
-  padding:13px 14px;
-  border-radius:12px;
-  border:1px solid rgba(0,0,0,0.08);
-  background:#ffffff;
-  color:#111;
-  margin-bottom:10px;
-  outline:none;
-  transition:0.2s;
-  box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);
-}
-
-input:focus{
-  border-color:#111;
-  box-shadow:0 0 0 3px rgba(0,0,0,0.08);
-}
-
-input::placeholder{
-  color:#aaa;
-}
-
-/* ==================== NAVBAR (GLASS PREMIUM) ==================== */
-/* ================= NAV BUTTON ================= */
 .navbar{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  background:rgba(255,255,255,0.9);
-  backdrop-filter:blur(12px);
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0;
-  border-top:1px solid rgba(0,0,0,0.06);
+  position:fixed;bottom:0;width:100%;
+  display:flex;justify-content:space-around;
+  background:#fff;padding:10px;
 }
 
-.nav-btn{
-  background:transparent;
-  border:none;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  font-size:12px;
-  color:#666;
-  cursor:pointer;
-  transition:0.25s ease;
-  min-width:60px;
-}
+.nav-btn{border:none;background:none;cursor:pointer}
+.nav-btn.active-nav{font-weight:bold}
 
-/* ICON */
-.nav-btn .icon{
-  font-size:20px;
-  transition:0.2s ease;
-}
-
-.nav-btn img{
-  width:20px;
-  height:20px;
-  transition:0.2s ease;
-}
-
-/* TEXT DEFAULT HIDDEN */
-.nav-btn .text{
-  opacity:0;
-  transform:translateY(4px);
-  font-size:11px;
-  transition:0.25s ease;
-}
-
-/* ACTIVE STATE */
-.nav-btn.active-nav{
-  color:#111;
-}
-
-.nav-btn.active-nav .text{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.nav-btn.active-nav .icon{
-  transform:translateY(-2px) scale(1.05);
-}
-
-.nav-btn.active-nav img{
-  transform:translateY(-2px) scale(1.05);
-}
-
-/* HOVER EFFECT */
-.nav-btn:hover{
-  color:#111;
-}
-/* ==================== MODAL (PREMIUM POPUP) ==================== */
-.modal{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.55);
-  justify-content:center;
-  align-items:center;
-  backdrop-filter:blur(6px);
-}
-
-.modal-content{
-  background:#fff;
-  width:92%;
-  max-width:400px;
-  border-radius:18px;
-  padding:18px;
-  text-align:center;
-  border:1px solid rgba(0,0,0,0.08);
-  box-shadow:0 25px 80px rgba(0,0,0,0.25);
-  animation:pop 0.25s ease;
-}
-
-@keyframes pop{
-  from{transform:scale(0.9);opacity:0}
-  to{transform:scale(1);opacity:1}
-}
-
-.modal-content img{
-  width:100%;
-  border-radius:14px;
-  margin-bottom:12px;
-}
-
-/* ==================== QTY ==================== */
-.qty-box{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:12px;
-  margin-bottom:10px;
-}
-
-.qty-box button{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:#111;
-  color:#fff;
-  box-shadow:0 6px 15px rgba(0,0,0,0.2);
-}
-
-/* ==================== CLOSE BUTTON ==================== */
-.close-btn{
-  background:#f5f5f5;
-  color:#111;
-  width:100%;
-  margin-top:10px;
-  border:1px solid rgba(0,0,0,0.08);
-}
-
-.close-btn:hover{
-  background:#eaeaea;
-}
-
-#productsContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px;
-  padding: 20px;
-}
-
-.product {
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 10px;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.product img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  border-radius: 10px;
+.product{
+  padding:10px;border:1px solid #ddd;
+  border-radius:10px;margin:6px;
 }
 </style>
 </head>
+
 <body>
-  
-<!-- ==================== MENU ==================== -->
+
+<!-- MENU -->
 <div id="menu" class="page active">
-  <h3 id="menuTitle">Mahsulotlar</h3>
-  <input class="search" type="text" id="searchMenu" placeholder="Qidirish..." oninput="renderProducts()">
+  <h3>Mahsulotlar</h3>
+  <input id="searchMenu" oninput="renderProducts()" placeholder="Qidirish...">
   <div id="productList"></div>
 </div>
 
-<!-- ==================== DISCOUNT ==================== -->
-<div id="discount" class="page">
-  <h3 id="discountTitle">Skidkalar</h3>
-  <input class="search" type="text" id="searchDiscount" placeholder="Qidirish..." oninput="renderDiscounts()">
-  <div id="discountList"></div>
-</div>
-
-<!-- ==================== CART ==================== -->
+<!-- CART -->
 <div id="cart" class="page">
-  <h3 id="cartTitle">Savatcha</h3>
-  <input type="text" id="cartName" placeholder="Ism Familiya" oninput="checkOrderBtn()">
-  <input type="text" id="cartPhone" placeholder="+998901234567" oninput="checkOrderBtn()">
+  <h3>Savatcha</h3>
+  <input id="cartName" placeholder="Ism">
+  <input id="cartPhone" placeholder="Telefon">
   <div id="cartItems"></div>
   <h3 id="total"></h3>
-  <button id="orderBtn" class="primary" onclick="sendOrder()" disabled>Buyurtma berish</button>
+  <button id="orderBtn" onclick="sendOrder()" disabled>Buyurtma</button>
 </div>
 
-<!-- ==================== HISTORY ==================== -->
-<div id="history" class="page">
-  <h3 id="historyTitle">Buyurtmalar tarixi</h3>
-  <div id="historyList"></div>
-</div>
-
-<!-- ==================== PROFILE ==================== -->
+<!-- PROFILE -->
 <div id="profile" class="page">
-  <h3 id="profileTitle">Profil</h3>
-  <input type="text" id="profileName" placeholder="Ism Familiya">
-  <input type="text" id="profilePhone" placeholder="+998901234567">
-  <button class="primary" onclick="saveProfile()" style="border: 3px solid #fff; border-radius: 10px; color: #ffffff; padding: 2% 5%;">Saqlash</button>
+  <h3>Profil</h3>
+  <input id="profileName">
+  <input id="profilePhone">
+  <button onclick="saveProfile()">Saqlash</button>
 </div>
 
-<!-- ==================== NAVBAR ==================== -->
+<!-- NAV -->
 <div class="navbar">
-
-  <button class="nav-btn active-nav" onclick="setNav(this);showPage('menu')">
-    <img src="home.png" class="icon">
-    <span class="text">Menu</span>
-  </button>
-
-  <button class="nav-btn" onclick="setNav(this);showPage('discount')">
-    <img src="fire.png" class="icon">
-    <span class="text">Skidka</span>
-  </button>
-
-  <button class="nav-btn" onclick="setNav(this);showPage('cart');loadCart()">
-    <img src="cart.png" class="icon">
-    <span class="text">Savatcha</span>
-  </button>
-
-  <button class="nav-btn" onclick="setNav(this);showPage('history');renderHistory()">
-    <img src="history.png" class="icon">
-    <span class="text">Tarix</span>
-  </button>
-
-  <button class="nav-btn" onclick="setNav(this);showPage('profile');loadProfile()">
-    <img src="user.png" class="icon">
-    <span class="text">Profil</span>
-  </button>
-
-</div>
-<!-- ==================== MODAL ==================== -->
-<div id="productModal" class="modal">
-  <div class="modal-content">
-    <img id="modalImg">
-    <h3 id="modalName"></h3>
-    <p id="modalPrice"></p>
-    <div id="modalAction"></div>
-    <button class="close-btn" onclick="closeModal()">Yopish</button>
-  </div>
+  <button class="nav-btn active-nav" onclick="setNav(this);showPage('menu')">Menu</button>
+  <button class="nav-btn" onclick="setNav(this);showPage('cart');loadCart()">Cart</button>
+  <button class="nav-btn" onclick="setNav(this);showPage('profile');loadProfile()">Profile</button>
 </div>
 
-<script>
-const botToken="8273671173:AAFhY1VN3bEcj1QSbXlSaqrsSYAGnijg";
-const chatId="8336275561";
-let lang=localStorage.getItem("lang")||"uz";
+<script type="module">
+/* ================= FIREBASE ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-let discounts=[];
+/* 🔥 YOUR FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
+};
 
-let cart=JSON.parse(localStorage.getItem('cart'))||[];
-let history=JSON.parse(localStorage.getItem('history'))||[];
-let profile=JSON.parse(localStorage.getItem('profile'))||{};
-let currentProduct=null;
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-/* ================= FIREBASE GLOBAL FIX ================= */
-let dbRef = null;
-let getDocsRef = null;
-let collectionRef = null;
+/* ================= DATA ================= */
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let profile = JSON.parse(localStorage.getItem("profile")) || [];
+let products = [];
 
-/* ================= LANGUAGE ================= */
-function setLang(l){lang=l;localStorage.setItem("lang",l);applyLang();}
-function applyLang(){
-  if(lang==="ru"){
-    menuTitle.innerText="Товары";
-    discountTitle.innerText="Скидки";
-    cartTitle.innerText="Корзина";
-    historyTitle.innerText="История заказов";
-    profileTitle.innerText="Профиль";
-    orderBtn.innerText="Оформить заказ";
-  }else{
-    menuTitle.innerText="Mahsulotlar";
-    discountTitle.innerText="Skidkalar";
-    cartTitle.innerText="Savatcha";
-    historyTitle.innerText="Buyurtmalar tarixi";
-    profileTitle.innerText="Profil";
-    orderBtn.innerText="Buyurtma berish";
-  }
+/* ================= PAGE ================= */
+window.showPage = function(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
 /* ================= NAV ================= */
-function setNav(el){
-  document.querySelectorAll('.nav-btn').forEach(b=>{
-    b.classList.remove('active-nav');
-  });
-  el.classList.add('active-nav');
+window.setNav = function(el){
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active-nav"));
+  el.classList.add("active-nav");
 }
 
-/* ================= SEARCH HELPERS (UNCHANGED) ================= */
-function similarity(a,b){
-  a=a.toLowerCase();
-  b=b.toLowerCase();
+/* ================= FIREBASE PRODUCTS ================= */
+window.renderProducts = async function(){
 
-  let longer=a.length>b.length?a:b;
-  let shorter=a.length>b.length?b:a;
+  const snap = await getDocs(collection(db,"products"));
+  const q = document.getElementById("searchMenu").value.toLowerCase();
 
-  let longerLength=longer.length;
-  if(longerLength===0) return 1;
+  const box = document.getElementById("productList");
+  box.innerHTML="";
 
-  return (longerLength-editDistance(longer,shorter))/parseFloat(longerLength);
-}
+  products = [];
 
-function editDistance(a,b){
-  a=a.toLowerCase();
-  b=b.toLowerCase();
-
-  let costs=[];
-
-  for(let i=0;i<=a.length;i++){
-    let lastValue=i;
-
-    for(let j=0;j<=b.length;j++){
-      if(i===0)
-        costs[j]=j;
-      else{
-        if(j>0){
-          let newValue=costs[j-1];
-
-          if(a.charAt(i-1)!==b.charAt(j-1))
-            newValue=Math.min(Math.min(newValue,lastValue),costs[j])+1;
-
-          costs[j-1]=lastValue;
-          lastValue=newValue;
-        }
-      }
-    }
-
-    if(i>0)
-      costs[b.length]=lastValue;
-  }
-
-  return costs[b.length];
-}
-
-/* ================= FIRESTORE PRODUCTS (FIXED) ================= */
-async function renderProducts(){
-  if(!dbRef) return;
-
-  const q = searchMenu.value.toLowerCase().trim();
-
-  const querySnapshot = await getDocsRef(collectionRef(dbRef, "products"));
-
-  productList.innerHTML="";
-
-  querySnapshot.forEach((doc)=>{
+  snap.forEach(doc=>{
     const p = doc.data();
+    products.push(p);
 
     if(!p.name.toLowerCase().includes(q)) return;
 
-    productList.innerHTML += `
-      <div class='product' onclick='openModal(${JSON.stringify(p)})'>
-        <img src='${p.image || p.img}'>
-        <div>
-          <h4>${p.name}</h4>
-          <p>${p.price.toLocaleString()} uzs</p>
-        </div>
+    box.innerHTML += `
+      <div class="product" onclick="addToCart('${p.name}',${p.price})">
+        <b>${p.name}</b><br>
+        ${p.price} so'm
       </div>
     `;
   });
 }
 
-/* ================= DISCOUNTS ================= */
-function renderDiscounts(){
-  let q=searchDiscount.value.toLowerCase();
-  discountList.innerHTML="";
-  discounts.filter(p=>p.name.toLowerCase().includes(q))
-  .forEach(p=>{
-    discountList.innerHTML+=`
-    <div class='product' onclick='openModal(${JSON.stringify(p)})'>
-      <img src='${p.img}'>
-      <div>
-        <h4>${p.name}</h4>
-        <p><s>${p.old.toLocaleString()}</s> → ${p.price.toLocaleString()} uzs</p>
-      </div>
-    </div>`;
-  });
-}
-
-/* ================= MODAL ================= */
-function openModal(p){
-  currentProduct=p;
-  modalImg.src=p.img || p.image;
-  modalName.innerText=p.name;
-  modalPrice.innerText=p.price.toLocaleString()+" uzs";
-  updateModalButtons();
-  productModal.style.display="flex";
-}
-
-function closeModal(){productModal.style.display="none";}
-
-/* ================= CART (UNCHANGED CORE) ================= */
-function updateModalButtons(){
-  let item=cart.find(i=>i.name===currentProduct.name);
-  if(item){
-    modalAction.innerHTML=`<div class="qty-box">
-      <button onclick="changeQty(-1)">-</button>
-      <span>${item.qty}</span>
-      <button onclick="changeQty(1)">+</button>
-    </div>`;
-  }else{
-    modalAction.innerHTML=`<button class="primary" onclick="addToCart()">Savatchaga qo'shish</button>`;
-  }
-}
-
-function addToCart(){
-  let item=cart.find(i=>i.name===currentProduct.name);
-  if(item)item.qty++;
-  else cart.push({...currentProduct,qty:1});
-  localStorage.setItem("cart",JSON.stringify(cart));
-  updateModalButtons();
-  loadCart();
-}
-
-function changeQty(v){
-  let item=cart.find(i=>i.name===currentProduct.name);
-  if(!item) return;
-  item.qty+=v;
-  if(item.qty<=0) cart=cart.filter(i=>i.name!==currentProduct.name);
-  localStorage.setItem("cart",JSON.stringify(cart));
-  updateModalButtons();
-  loadCart();
-}
-
 /* ================= CART ================= */
-function loadCart(){
-  cartItems.innerHTML="";
+window.addToCart = function(name,price){
+  let item = cart.find(i=>i.name===name);
+  if(item) item.qty++;
+  else cart.push({name,price,qty:1});
+
+  localStorage.setItem("cart",JSON.stringify(cart));
+  loadCart();
+}
+
+window.loadCart = function(){
+  const box = document.getElementById("cartItems");
+  box.innerHTML="";
   let total=0;
 
   cart.forEach(i=>{
-    total+=i.price*i.qty;
+    total += i.price*i.qty;
 
-    cartItems.innerHTML+=`
-    <div class="cart-item">
-      <div style="flex:1">${i.name} x${i.qty}</div>
+    box.innerHTML += `
       <div>
-        <button class="secondary" onclick="adjustCart('${i.name}',-1)">-</button>
-        <button class="secondary" onclick="adjustCart('${i.name}',1)">+</button>
+        ${i.name} x${i.qty}
+        <button onclick="adjustCart('${i.name}',-1)">-</button>
+        <button onclick="adjustCart('${i.name}',1)">+</button>
       </div>
-    </div>`;
+    `;
   });
 
-  totalElem=document.getElementById("total");
-  totalElem.innerText="Jami: "+total.toLocaleString()+" uzs";
+  document.getElementById("total").innerText="Jami: "+total;
 
-  if(profile.name) cartName.value=profile.name;
-  if(profile.phone) cartPhone.value=profile.phone;
-
-  checkOrderBtn();
+  document.getElementById("orderBtn").disabled =
+    !(document.getElementById("cartName").value && cart.length);
 }
 
-/* ================= ORDER CHECK ================= */
-function checkOrderBtn(){
-  let name=cartName.value.trim();
-  let phone=cartPhone.value.trim();
-  orderBtn.disabled=!(name && phone && cart.length>0);
+window.adjustCart = function(name,val){
+  let item = cart.find(i=>i.name===name);
+  if(!item) return;
+
+  item.qty += val;
+  if(item.qty<=0) cart = cart.filter(i=>i.name!==name);
+
+  localStorage.setItem("cart",JSON.stringify(cart));
+  loadCart();
 }
 
-/* ================= HISTORY ================= */
-function renderHistory(){
-  historyList.innerHTML="";
-  history.forEach(h=>{
-    let itemsText=h.items.map(it=>it.name+" x"+it.qty).join(", ");
-    historyList.innerHTML+=`
-    <div class="history-item">
-      <div style="flex:1">${h.name} | ${h.phone}</div>
-      <div>${itemsText} | Jami: ${h.total.toLocaleString()} so'm</div>
-    </div>`;
-  });
+/* ================= ORDER ================= */
+window.sendOrder = function(){
+  alert("Buyurtma yuborildi!");
+  cart=[];
+  localStorage.removeItem("cart");
+  loadCart();
 }
 
-function loadProfile(){
-  profileName.value = profile.name || "";
-  profilePhone.value = profile.phone || "";
+/* ================= PROFILE ================= */
+window.saveProfile = function(){
+  profile = {
+    name: document.getElementById("profileName").value,
+    phone: document.getElementById("profilePhone").value
+  };
+
+  localStorage.setItem("profile",JSON.stringify(profile));
+  alert("Saved");
 }
 
-/* ================= INIT FIX (MAIN BUG FIX) ================= */
-window.onload=function(){
+window.loadProfile = function(){
+  document.getElementById("profileName").value = profile.name || "";
+  document.getElementById("profilePhone").value = profile.phone || "";
+}
 
-  // UI hamma vaqt ishlasin
-  renderDiscounts();
-  applyLang();
+/* ================= INIT ================= */
+window.onload = async function(){
+  await renderProducts();
+  loadCart();
   loadProfile();
-
-  // page switching xavfsiz bo‘lsin
-  showPage("menu");
-
-  // FIREBASE kech yuklansin (UI ni bloklamaydi)
-  import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js").then(firebase=>{
-    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js").then(fs=>{
-
-      const { initializeApp } = firebase;
-      const { getFirestore, collection, getDocs } = fs;
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyD0aXqLiA-GSAeXdbz9YDVcQsbN3XTJGeo",
-        authDomain: "eagle-group-545ba.firebaseapp.com",
-        projectId: "eagle-group-545ba",
-        storageBucket: "eagle-group-545ba.firebasestorage.app",
-        messagingSenderId: "803658294353",
-        appId: "1:803658294353:web:9b1917a7fcc79d6666c470",
-      };
-
-      const app = initializeApp(firebaseConfig);
-
-      dbRef = getFirestore(app);
-      collectionRef = collection;
-      getDocsRef = getDocs;
-
-      renderProducts(); // faqat data tayyor bo‘lganda
-    });
-  });
-
-};
+}
 </script>
+
 </body>
 </html>
