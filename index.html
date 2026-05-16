@@ -629,6 +629,11 @@ function renderHistory(){
   });
 }
 
+function loadProfile(){
+  profileName.value = profile.name || "";
+  profilePhone.value = profile.phone || "";
+}
+
 /* ================= INIT FIX (MAIN BUG FIX) ================= */
 window.onload=function(){
 
