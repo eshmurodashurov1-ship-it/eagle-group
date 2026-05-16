@@ -632,7 +632,15 @@ function renderHistory(){
 /* ================= INIT FIX (MAIN BUG FIX) ================= */
 window.onload=function(){
 
-  /* FIREBASE CONNECT FIX */
+  // UI hamma vaqt ishlasin
+  renderDiscounts();
+  applyLang();
+  loadProfile();
+
+  // page switching xavfsiz bo‘lsin
+  showPage("menu");
+
+  // FIREBASE kech yuklansin (UI ni bloklamaydi)
   import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js").then(firebase=>{
     import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js").then(fs=>{
 
@@ -654,13 +662,10 @@ window.onload=function(){
       collectionRef = collection;
       getDocsRef = getDocs;
 
-      renderProducts(); // 🔥 NOW IT WORKS
+      renderProducts(); // faqat data tayyor bo‘lganda
     });
   });
 
-  renderDiscounts();
-  applyLang();
-  loadProfile();
 };
 </script>
 </body>
