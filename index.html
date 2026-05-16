@@ -5,26 +5,151 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EagleGroup Firebase</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-body{margin:0;font-family:Poppins;background:#f7f7f8}
-.page{display:none;padding:18px}
-.active{display:block}
 
-.navbar{
-  position:fixed;bottom:0;width:100%;
-  display:flex;justify-content:space-around;
-  background:#fff;padding:10px;
+/* ================= RESET ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
 }
 
-.nav-btn{border:none;background:none;cursor:pointer}
-.nav-btn.active-nav{font-weight:bold}
-
-.product{
-  padding:10px;border:1px solid #ddd;
-  border-radius:10px;margin:6px;
+body{
+  background:linear-gradient(180deg,#eaf6ff,#f6f9fc);
+  padding-bottom:90px;
 }
+
+/* ================= CONTAINER ================= */
+.container{
+  width:92%;
+  max-width:500px;
+  margin:20px auto;
+}
+
+/* ================= HEADER ================= */
+header{
+  background:linear-gradient(135deg,#00bfff,#0077ff);
+  color:white;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 10px 25px rgba(0,123,255,0.25);
+  position:relative;
+}
+
+.back-btn{
+  position:absolute;
+  left:15px;
+  top:15px;
+  font-size:20px;
+  cursor:pointer;
+  opacity:0.9;
+}
+
+h1{
+  font-size:26px;
+  margin-bottom:5px;
+}
+
+h2{
+  font-size:14px;
+  font-weight:400;
+  opacity:0.9;
+}
+
+/* ================= FORM CARD ================= */
+.form{
+  background:white;
+  margin-top:-10px;
+  padding:18px;
+  border-radius:18px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* ================= INPUT ================= */
+.form input{
+  width:100%;
+  padding:14px;
+  margin:10px 0;
+  border-radius:12px;
+  border:1px solid #e6e6e6;
+  background:#f9fbfd;
+  outline:none;
+  transition:0.2s;
+  font-size:14px;
+}
+
+.form input:focus{
+  border-color:#00bfff;
+  box-shadow:0 0 0 3px rgba(0,191,255,0.15);
+}
+
+/* ================= TOTAL ================= */
+.total{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px;
+  margin:15px 0;
+  border-radius:14px;
+  background:linear-gradient(135deg,#f0f9ff,#e6f4ff);
+  font-weight:600;
+  border:1px solid #d6ecff;
+}
+
+.amount{
+  color:#0077ff;
+  font-size:16px;
+}
+
+/* ================= BUTTON ================= */
+button{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#00c853,#00a844);
+  color:white;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 8px 20px rgba(0,200,83,0.25);
+}
+
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 25px rgba(0,200,83,0.35);
+}
+
+/* ================= BOTTOM NAV ================= */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:10px 0;
+  box-shadow:0 -5px 20px rgba(0,0,0,0.08);
+  border-radius:18px 18px 0 0;
+}
+
+.bottom-nav button{
+  background:none;
+  border:none;
+  font-size:14px;
+  color:#0077ff;
+  font-weight:600;
+}
+
+/* active effect */
+.bottom-nav button:hover{
+  color:#00bfff;
+}
+
 </style>
 </head>
 
