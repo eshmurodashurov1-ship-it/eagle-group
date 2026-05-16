@@ -298,10 +298,34 @@ input::placeholder{
 .close-btn:hover{
   background:#eaeaea;
 }
+
+#productsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  padding: 20px;
+}
+
+.product {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.product img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+}
 </style>
 </head>
 <body>
 
+<div id="productsContainer"></div>
+  
 <!-- ==================== MENU ==================== -->
 <div id="menu" class="page active">
   <h3 id="menuTitle">Mahsulotlar</h3>
@@ -694,8 +718,21 @@ const db = getFirestore(app);
 async function getProducts() {
   const querySnapshot = await getDocs(collection(db, "products"));
 
+  const container = document.getElementById("productsContainer");
+
+  container.innerHTML = "";
+
   querySnapshot.forEach((doc) => {
-    console.log("Product:", doc.id, doc.data());
+    const data = doc.data();
+
+    container.innerHTML += `
+      <div class="product">
+        <img src="${data.image}" />
+        <h3>${data.name}</h3>
+        <p>${data.category}</p>
+        <b>${data.price} so'm</b>
+      </div>
+    `;
   });
 }
 
