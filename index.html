@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EagleGroup Firebase</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -20,133 +20,106 @@
 body{
   background:linear-gradient(180deg,#eaf6ff,#f6f9fc);
   padding-bottom:90px;
+  color:#111;
 }
 
-/* ================= CONTAINER ================= */
-.container{
-  width:92%;
-  max-width:500px;
-  margin:20px auto;
-}
+/* ================= PAGES ================= */
+.page{display:none;padding:16px;}
+.active{display:block;}
 
 /* ================= HEADER ================= */
-header{
-  background:linear-gradient(135deg,#00bfff,#0077ff);
-  color:white;
-  padding:20px;
-  border-radius:18px;
-  box-shadow:0 10px 25px rgba(0,123,255,0.25);
-  position:relative;
+h3{
+  margin-bottom:12px;
+  font-size:18px;
 }
 
-.back-btn{
-  position:absolute;
-  left:15px;
-  top:15px;
-  font-size:20px;
+/* ================= PRODUCT GRID ================= */
+#productList{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+/* ================= PRODUCT CARD ================= */
+.product{
+  background:#fff;
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
   cursor:pointer;
-  opacity:0.9;
+  transition:0.2s;
 }
 
-h1{
-  font-size:26px;
-  margin-bottom:5px;
+.product:hover{
+  transform:translateY(-3px);
 }
 
-h2{
-  font-size:14px;
-  font-weight:400;
-  opacity:0.9;
-}
-
-/* ================= FORM CARD ================= */
-.form{
-  background:white;
-  margin-top:-10px;
-  padding:18px;
-  border-radius:18px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+.product img{
+  width:100%;
+  border-radius:12px;
 }
 
 /* ================= INPUT ================= */
-.form input{
+input{
   width:100%;
-  padding:14px;
-  margin:10px 0;
+  padding:12px;
+  margin:6px 0;
   border-radius:12px;
-  border:1px solid #e6e6e6;
-  background:#f9fbfd;
+  border:1px solid #ddd;
   outline:none;
-  transition:0.2s;
-  font-size:14px;
-}
-
-.form input:focus{
-  border-color:#00bfff;
-  box-shadow:0 0 0 3px rgba(0,191,255,0.15);
-}
-
-/* ================= TOTAL ================= */
-.total{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:14px;
-  margin:15px 0;
-  border-radius:14px;
-  background:linear-gradient(135deg,#f0f9ff,#e6f4ff);
-  font-weight:600;
-  border:1px solid #d6ecff;
-}
-
-.amount{
-  color:#0077ff;
-  font-size:16px;
+  background:#fff;
 }
 
 /* ================= BUTTON ================= */
 button{
   width:100%;
-  padding:15px;
+  padding:14px;
   border:none;
   border-radius:14px;
-  background:linear-gradient(135deg,#00c853,#00a844);
-  color:white;
-  font-size:16px;
+  background:#00bfff;
+  color:#fff;
   font-weight:600;
   cursor:pointer;
-  transition:0.2s;
-  box-shadow:0 8px 20px rgba(0,200,83,0.25);
 }
 
-button:hover{
-  transform:translateY(-2px);
-  box-shadow:0 12px 25px rgba(0,200,83,0.35);
+/* ================= CART ================= */
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
+  background:#fff;
+  border-radius:12px;
+  margin:8px 0;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
 }
 
-/* ================= BOTTOM NAV ================= */
-.bottom-nav{
+.qty button{
+  width:30px;
+  height:30px;
+  border-radius:8px;
+}
+
+/* ================= NAV ================= */
+.navbar{
   position:fixed;
   bottom:0;
   width:100%;
-  background:white;
+  background:#fff;
   display:flex;
   justify-content:space-around;
   padding:10px 0;
-  box-shadow:0 -5px 20px rgba(0,0,0,0.08);
-  border-radius:18px 18px 0 0;
+  box-shadow:0 -5px 15px rgba(0,0,0,0.08);
 }
 
-.bottom-nav button{
+.nav-btn{
   background:none;
   border:none;
-  font-size:14px;
-  color:#0077ff;
   font-weight:600;
+  color:#555;
 }
 
-/* active effect */
-.bottom-nav button:hover{
+.nav-btn.active-nav{
   color:#00bfff;
 }
 
@@ -155,55 +128,65 @@ button:hover{
 
 <body>
 
-<!-- MENU -->
+<!-- ================= MENU ================= -->
 <div id="menu" class="page active">
   <h3>Mahsulotlar</h3>
-  <input id="searchMenu" oninput="renderProducts()" placeholder="Qidirish...">
+  <input id="search" placeholder="Qidirish..." oninput="renderProducts()">
   <div id="productList"></div>
 </div>
 
-<!-- CART -->
+<!-- ================= CART ================= -->
 <div id="cart" class="page">
   <h3>Savatcha</h3>
-  <input id="cartName" placeholder="Ism">
-  <input id="cartPhone" placeholder="Telefon">
+
+  <input id="name" placeholder="Ism">
+  <input id="phone" placeholder="Telefon">
+
   <div id="cartItems"></div>
+
   <h3 id="total"></h3>
-  <button id="orderBtn" onclick="sendOrder()" disabled>Buyurtma</button>
+
+  <button onclick="sendOrder()" id="orderBtn" disabled>
+    Buyurtma berish
+  </button>
 </div>
 
-<!-- PROFILE -->
+<!-- ================= PROFILE ================= -->
 <div id="profile" class="page">
   <h3>Profil</h3>
-  <input id="profileName">
-  <input id="profilePhone">
+
+  <input id="pname">
+  <input id="pphone">
+
   <button onclick="saveProfile()">Saqlash</button>
 </div>
 
-<!-- NAV -->
+<!-- ================= NAV ================= -->
 <div class="navbar">
-  <button class="nav-btn active-nav" onclick="setNav(this);showPage('menu')">Menu</button>
-  <button class="nav-btn" onclick="setNav(this);showPage('cart');loadCart()">Cart</button>
-  <button class="nav-btn" onclick="setNav(this);showPage('profile');loadProfile()">Profile</button>
+  <button class="nav-btn active-nav" onclick="setPage('menu')">Menu</button>
+  <button class="nav-btn" onclick="setPage('cart')">Cart</button>
+  <button class="nav-btn" onclick="setPage('profile')">Profile</button>
 </div>
 
 <script type="module">
-/* ================= FIREBASE ================= */
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore,
   collection,
-  getDocs
+  getDocs,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* 🔥 YOUR FIREBASE CONFIG */
+/* 🔥 FIREBASE CONFIG (TO‘LDIRASAN) */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
+  apiKey: "AIzaSyD0aXqLiA-GSAeXdbz9YDVcQsbN3XTJGeo",
+  authDomain: "eagle-group-545ba.firebaseapp.com",
+  projectId: "eagle-group-545ba",
+  storageBucket: "eagle-group-545ba.firebasestorage.app",
+  messagingSenderId: "803658294353",
+  appId: "1:803658294353:web:9b1917a7fcc79d6666c470",
+  measurementId: "G-RKEXBRF5C3"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -211,31 +194,25 @@ const db = getFirestore(app);
 
 /* ================= DATA ================= */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let profile = JSON.parse(localStorage.getItem("profile")) || [];
+let profile = JSON.parse(localStorage.getItem("profile")) || {};
 let products = [];
 
 /* ================= PAGE ================= */
-window.showPage = function(id){
+window.setPage = function(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-/* ================= NAV ================= */
-window.setNav = function(el){
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active-nav"));
-  el.classList.add("active-nav");
-}
-
-/* ================= FIREBASE PRODUCTS ================= */
+/* ================= PRODUCTS ================= */
 window.renderProducts = async function(){
 
   const snap = await getDocs(collection(db,"products"));
-  const q = document.getElementById("searchMenu").value.toLowerCase();
 
+  const q = document.getElementById("search").value.toLowerCase();
   const box = document.getElementById("productList");
-  box.innerHTML="";
 
-  products = [];
+  box.innerHTML="";
+  products=[];
 
   snap.forEach(doc=>{
     const p = doc.data();
@@ -245,8 +222,9 @@ window.renderProducts = async function(){
 
     box.innerHTML += `
       <div class="product" onclick="addToCart('${p.name}',${p.price})">
-        <b>${p.name}</b><br>
-        ${p.price} so'm
+        <img src="${p.image}">
+        <b>${p.name}</b>
+        <p>${p.price} so'm</p>
       </div>
     `;
   });
@@ -254,15 +232,19 @@ window.renderProducts = async function(){
 
 /* ================= CART ================= */
 window.addToCart = function(name,price){
+
   let item = cart.find(i=>i.name===name);
+
   if(item) item.qty++;
   else cart.push({name,price,qty:1});
 
   localStorage.setItem("cart",JSON.stringify(cart));
+
   loadCart();
 }
 
 window.loadCart = function(){
+
   const box = document.getElementById("cartItems");
   box.innerHTML="";
   let total=0;
@@ -271,34 +253,50 @@ window.loadCart = function(){
     total += i.price*i.qty;
 
     box.innerHTML += `
-      <div>
-        ${i.name} x${i.qty}
-        <button onclick="adjustCart('${i.name}',-1)">-</button>
-        <button onclick="adjustCart('${i.name}',1)">+</button>
+      <div class="cart-item">
+        <span>${i.name} x${i.qty}</span>
+
+        <div class="qty">
+          <button onclick="changeQty('${i.name}',-1)">-</button>
+          <button onclick="changeQty('${i.name}',1)">+</button>
+        </div>
       </div>
     `;
   });
 
-  document.getElementById("total").innerText="Jami: "+total;
+  document.getElementById("total").innerText="Jami: "+total+" so'm";
 
   document.getElementById("orderBtn").disabled =
-    !(document.getElementById("cartName").value && cart.length);
+    !(document.getElementById("name").value && cart.length);
 }
 
-window.adjustCart = function(name,val){
+/* ================= QTY ================= */
+window.changeQty = function(name,val){
   let item = cart.find(i=>i.name===name);
-  if(!item) return;
 
   item.qty += val;
-  if(item.qty<=0) cart = cart.filter(i=>i.name!==name);
+
+  if(item.qty<=0){
+    cart = cart.filter(i=>i.name!==name);
+  }
 
   localStorage.setItem("cart",JSON.stringify(cart));
   loadCart();
 }
 
-/* ================= ORDER ================= */
-window.sendOrder = function(){
+/* ================= ORDER (FIREBASE) ================= */
+window.sendOrder = async function(){
+
+  await addDoc(collection(db,"orders"),{
+    name:document.getElementById("name").value,
+    phone:document.getElementById("phone").value,
+    cart:cart,
+    total:cart.reduce((a,b)=>a+b.price*b.qty,0),
+    time:new Date()
+  });
+
   alert("Buyurtma yuborildi!");
+
   cart=[];
   localStorage.removeItem("cart");
   loadCart();
@@ -306,26 +304,22 @@ window.sendOrder = function(){
 
 /* ================= PROFILE ================= */
 window.saveProfile = function(){
+
   profile = {
-    name: document.getElementById("profileName").value,
-    phone: document.getElementById("profilePhone").value
+    name:document.getElementById("pname").value,
+    phone:document.getElementById("pphone").value
   };
 
   localStorage.setItem("profile",JSON.stringify(profile));
-  alert("Saved");
-}
-
-window.loadProfile = function(){
-  document.getElementById("profileName").value = profile.name || "";
-  document.getElementById("profilePhone").value = profile.phone || "";
+  alert("Saqlangan");
 }
 
 /* ================= INIT ================= */
 window.onload = async function(){
   await renderProducts();
   loadCart();
-  loadProfile();
 }
+
 </script>
 
 </body>
